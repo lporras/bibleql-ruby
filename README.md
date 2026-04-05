@@ -77,9 +77,19 @@ client.random_verse(books: "PSA")
 
 ### Search
 
+Full-text search across verses.
+
 ```ruby
-results = client.search("love", limit: 10)
-# => [#<BibleQL::Verse ...>, ...]
+results = client.search("love", limit: 5)
+results.each do |verse|
+  verse.book_name  # => "Genesis"
+  verse.chapter    # => 22
+  verse.verse      # => 2
+  verse.text       # => "He said, \"Now take your son, your only son, Isaac, whom you love..."
+end
+
+# With a specific translation
+results = client.search("amor", translation: "spa-bes", limit: 10)
 ```
 
 ### Verse of the Day
