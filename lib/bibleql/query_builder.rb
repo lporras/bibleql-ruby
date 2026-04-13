@@ -171,6 +171,26 @@ module BibleQL
       }
     end
 
+    def semantic_search(query_text, translation:, limit: nil)
+      {
+        query: <<~GQL,
+          query($query: String!, $translation: String, $limit: Int) {
+            semanticSearch(query: $query, translation: $translation, limit: $limit) {
+              verse {
+                bookId
+                bookName
+                chapter
+                verse
+                text
+              }
+              similarity
+            }
+          }
+        GQL
+        variables: { query: query_text, translation: translation, limit: limit }.compact
+      }
+    end
+
     def verse_of_the_day(translation:, date: nil)
       {
         query: <<~GQL,

@@ -146,6 +146,35 @@ RSpec.describe BibleQL::Client do
     end
   end
 
+  describe "#semantic_search" do
+    it "returns an array of SemanticSearchResult objects" do
+      stub_graphql_success("semanticSearch" => [
+                             { "verse" => { "bookId" => "JHN", "bookName" => "John", "chapter" => 3, "verse" => 16,
+                                            "text" => "For God so loved..." },
+                               "similarity" => 0.95 }
+                           ])
+
+      result = client.semantic_search("love and forgiveness", limit: 5)
+      expect(result).to all(be_a(BibleQL::SemanticSearchResult))
+      expect(result.first.similarity).to eq(0.95)
+      expect(result.first.verse).to be_a(BibleQL::Verse)
+      expect(result.first.verse.book_id).to eq("JHN")
+      expect(result.first.verse.text).to eq("For God so loved...")
+    end
+
+    it "uses the provided translation" do
+      stub = stub_graphql_success("semanticSearch" => [
+                                    { "verse" => { "bookId" => "JHN", "bookName" => "Juan", "chapter" => 3, "verse" => 16,
+                                                   "text" => "Porque de tal manera..." },
+                                      "similarity" => 0.92 }
+                                  ])
+
+      result = client.semantic_search("amor y perdon", translation: "spa-rv1909")
+      expect(result.first.verse.book_name).to eq("Juan")
+      expect(stub).to have_been_requested
+    end
+  end
+
   describe "#verse_of_the_day" do
     it "returns a Passage object" do
       stub_graphql_success("verseOfTheDay" => {

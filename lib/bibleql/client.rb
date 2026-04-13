@@ -72,6 +72,12 @@ module BibleQL
       data["search"].map { |v| Verse.new(map_verse(v)) }
     end
 
+    def semantic_search(query_text, translation: nil, limit: nil)
+      t = translation || @default_translation
+      data = execute(QueryBuilder.semantic_search(query_text, translation: t, limit: limit), "semanticSearch")
+      data["semanticSearch"].map { |item| SemanticSearchResult.new(map_semantic_search_result(item)) }
+    end
+
     def verse_of_the_day(translation: nil, date: nil)
       t = translation || @default_translation
       data = execute(QueryBuilder.verse_of_the_day(translation: t, date: date), "verseOfTheDay")
@@ -136,6 +142,13 @@ module BibleQL
         chapter: data["chapter"],
         verse: data["verse"],
         text: data["text"]
+      }
+    end
+
+    def map_semantic_search_result(data)
+      {
+        verse: map_verse(data["verse"]),
+        similarity: data["similarity"]
       }
     end
 

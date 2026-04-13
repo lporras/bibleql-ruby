@@ -12,6 +12,7 @@ require_relative "bibleql/resources/language"
 require_relative "bibleql/resources/localized_book"
 require_relative "bibleql/resources/chapter"
 require_relative "bibleql/resources/search_result"
+require_relative "bibleql/resources/semantic_search_result"
 require_relative "bibleql/query_builder"
 require_relative "bibleql/client"
 
