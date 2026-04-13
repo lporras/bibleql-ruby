@@ -58,6 +58,19 @@ RSpec.describe BibleQL::QueryBuilder do
     end
   end
 
+  describe ".semantic_search" do
+    it "includes query and translation variables" do
+      result = described_class.semantic_search("love and forgiveness", translation: "eng-web", limit: 10)
+      expect(result[:query]).to include("semanticSearch")
+      expect(result[:variables]).to eq(query: "love and forgiveness", translation: "eng-web", limit: 10)
+    end
+
+    it "compacts nil limit" do
+      result = described_class.semantic_search("hope", translation: "eng-web")
+      expect(result[:variables]).to eq(query: "hope", translation: "eng-web")
+    end
+  end
+
   describe ".verse_of_the_day" do
     it "includes translation variable" do
       result = described_class.verse_of_the_day(translation: "eng-web")
